@@ -14,14 +14,14 @@ class MusicBox:
         log_file.setFormatter(fmtr)
         log_file.setLevel(logging.INFO)
         self.logger.addHandler(log_file)
-        self.rfid = RFID()
+        self.rfid = RFID("../mapping.yaml")
         self.buttons = Buttons()
         self.rotary = Rotary()
 
     def runs(self):
         self.logger.info("Starting Musicbox")
 
-        self.RFID.watch("../mapping.yaml")
+        self.RFID.watch()
         self.Buttons.watch()
         self.Rotary.watch()
 
