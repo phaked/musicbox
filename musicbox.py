@@ -21,7 +21,7 @@ class MusicBox:
     def runs(self):
         self.logger.info("Starting Musicbox")
 
-        self.RFID.watch("mapping.yaml")
+        self.RFID.watch("../mapping.yaml")
         self.Buttons.watch()
         self.Rotary.watch()
 
