@@ -2,6 +2,7 @@ import logging
 from buttons import Buttons
 from rotary import Rotary
 from rfid import RFID
+import RPi.GPIO as GPIO
 
 
 class MusicBox:
@@ -17,13 +18,19 @@ class MusicBox:
         self.rfid = RFID("../mapping.yaml")
         self.buttons = Buttons()
         self.rotary = Rotary()
+        mode = GPIO.getmode()
+
+        if mode is None:
+            GPIO.setmode(GPIO.BCM)
+        else:
+            pin_mode = gpioMode
 
     def runs(self):
         self.logger.info("Starting Musicbox")
 
-        self.RFID.watch()
-        self.Buttons.watch()
         self.Rotary.watch()
+        self.Buttons.watch()
+        self.RFID.watch()
 
 
 if __name__ == '__main__':
