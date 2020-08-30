@@ -9,7 +9,7 @@ class MusicBox:
     def __init__(self):
         self.logger = logging.getLogger("musicbox")
         self.logger.setLevel(logging.INFO)
-        log_file = logging.FileHandler("musicbox.log")
+        log_file = logging.FileHandler("../musicbox.log")
         fmtr = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         log_file.setFormatter(fmtr)
         log_file.setLevel(logging.INFO)
