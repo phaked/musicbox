@@ -12,9 +12,8 @@ class RFID:
         self.reader = MFRC522()
         self.logger = logging.getLogger("musicbox")
         self.kill = KillMe()
-        self.mapping_file = map_path
-        
-        with open(self.mapping_file) as file:
+
+        with open(map_path) as file:
             self.playlist_map = yaml.full_load(file)
             self.logger.info("Loading RFID playlist mapping")
             
