@@ -14,7 +14,7 @@ class Buttons:
         self._create_button(6, self._next_callback)
         # create previous button
         self._create_button(5, self._prev_callback)
-        self.kill = False
+        self.kill = util.KillMe()
         self.mpc = MPDClient()
 
     def _next_callback(self, *args):
@@ -35,9 +35,19 @@ class Buttons:
 
     def watch(self):
         self.logger.info("Starting buttons.")
-        while not self.kill:
+        while not self.kill.kill_me:
             sleep(1)
         GPIO.cleanup()
         self.logger.info("Exiting buttons.")
         return
 
+if __name__ == '__main__':
+    logger = logging.getLogger("musicbox")
+    logger.setLevel(logging.INFO)
+    log_file = logging.FileHandler("../musicbox.log")
+    fmtr = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    log_file.setFormatter(fmtr)
+    log_file.setLevel(logging.INFO)
+    logger.addHandler(log_file)
+    buttons = Buttons()
+    buttons.watch()

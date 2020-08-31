@@ -13,7 +13,7 @@ class Rotary:
         self.logger = logging.getLogger("musicbox")
         self.encoder = pyky040.Encoder(CLK=6, DT=5)
         self.encoder.setup(inc_callback=self._inc, dec_callback=self._dec)
-        self.kill = False
+        self.kill = util.KillMe()
         self.mpc = MPDClient()
 
     def _inc(self, counter):
@@ -28,8 +28,19 @@ class Rotary:
 
     def watch(self):
         self.encoder.watch()
-        while not self.kill:
+        while not self.kill.kill_me:
             sleep(1)
         GPIO.cleanup()
         self.logger.info("Exiting rotary.")
         return
+
+if __name__ == '__main__':
+    logger = logging.getLogger("musicbox")
+    logger.setLevel(logging.INFO)
+    log_file = logging.FileHandler("../musicbox.log")
+    fmtr = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    log_file.setFormatter(fmtr)
+    log_file.setLevel(logging.INFO)
+    logger.addHandler(log_file)
+    rotary = Rotary()
+    rotary.watch()
