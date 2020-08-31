@@ -70,5 +70,5 @@ if __name__ == '__main__':
     log_file.setFormatter(fmtr)
     log_file.setLevel(logging.INFO)
     logger.addHandler(log_file)
-    rfid = RFID()
+    rfid = RFID("../mapping.yaml")
     rfid.watch()
