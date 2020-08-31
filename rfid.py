@@ -11,7 +11,7 @@ class RFID:
     def __init__(self, map_path):
         self.reader = MFRC522()
         self.logger = logging.getLogger("musicbox")
-        self.kill = KillMe()
+        self.kill = False
 
         with open(map_path) as file:
             self.playlist_map = yaml.full_load(file)
@@ -20,10 +20,6 @@ class RFID:
         self.mpc = MPDClient()
         self.last_card_id = 0
 
-    def _kill_callback(self, signum, frame):
-        self.logger.info(f"Service killed by {signum}")
-        self.kill_me = True
-    
     def _convert_uid(self, uid):
         id = 0
         for i in range(len(uid)):
@@ -33,7 +29,7 @@ class RFID:
     def watch(self):
         self.logger.info("Starting RFID.")
 
-        while not self.kill.kill_me:
+        while not self.kill:
             status , _ = self.reader.MFRC522_Request(self.reader.PICC_REQIDL)
             if status == self.reader.MI_OK:
                 status, uid = self.reader.MFRC522_Anticoll()

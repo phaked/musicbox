@@ -14,7 +14,7 @@ class Buttons:
         self._create_button(6, self._next_callback)
         # create previous button
         self._create_button(5, self._prev_callback)
-        self.kill = util.KillMe()
+        self.kill = False
         self.mpc = MPDClient()
 
     def _next_callback(self, *args):
@@ -35,7 +35,7 @@ class Buttons:
 
     def watch(self):
         self.logger.info("Starting buttons.")
-        while not self.kill.kill_me:
+        while not self.kill:
             sleep(1)
         GPIO.cleanup()
         self.logger.info("Exiting buttons.")

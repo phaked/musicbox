@@ -2,6 +2,8 @@ import logging
 from buttons import Buttons
 from rotary import Rotary
 from rfid import RFID
+from time import sleep
+from util import KillMe
 import RPi.GPIO as GPIO
 
 
@@ -18,6 +20,7 @@ class MusicBox:
         self.rotary = Rotary()
         self.rfid = RFID("../mapping.yaml")
         self.buttons = Buttons()
+        self.kill = KillMe()
 
     def run(self):
         self.logger.info("Starting Musicbox")
@@ -25,7 +28,11 @@ class MusicBox:
         self.rotary.watch()
         self.buttons.watch()
         self.rfid.watch()
-
+        while not self.kill.kill_me:
+            sleep(1)
+        self.rotary.kill = True
+        self.buttons.kill = True
+        self.rfid.kill = True
 
 if __name__ == '__main__':
     mb = MusicBox()
