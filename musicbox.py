@@ -15,15 +15,9 @@ class MusicBox:
         log_file.setFormatter(fmtr)
         log_file.setLevel(logging.INFO)
         self.logger.addHandler(log_file)
+        self.rotary = Rotary()
         self.rfid = RFID("../mapping.yaml")
         self.buttons = Buttons()
-        self.rotary = Rotary()
-        mode = GPIO.getmode()
-
-        if mode is None:
-            GPIO.setmode(GPIO.BCM)
-        else:
-            pin_mode = gpioMode
 
     def runs(self):
         self.logger.info("Starting Musicbox")
