@@ -1,10 +1,13 @@
 import mpd
 import signal
+import logging
 
 class KillMe:
 
     def __init__(self):
         self.kill_me = False
+        self.logger = logging.getLogger("musicbox")
+
         signal.signal(signal.SIGINT, self._kill_callback)
         signal.signal(signal.SIGTERM, self._kill_callback)
 
