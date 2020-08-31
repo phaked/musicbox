@@ -19,7 +19,7 @@ class MusicBox:
         self.rfid = RFID("../mapping.yaml")
         self.buttons = Buttons()
 
-    def runs(self):
+    def run(self):
         self.logger.info("Starting Musicbox")
 
         self.Rotary.watch()
