@@ -12,31 +12,24 @@ class Rotary:
     def __init__(self):
         self.logger = logging.getLogger("musicbox")
         self.encoder = pyky040.Encoder(CLK=6, DT=5)
-        self.encoder.setup(inc_callback=my_inc, dec_callback=my_dec)
-
+        self.encoder.setup(inc_callback=self._inc, dec_callback=self._dec)
         self.kill = util.KillMe()
         self.mpc = MPDClient()
 
-    def my_inc(counter):
-        mpc.connect("localhost", 6600)
-        vol = int(mpc.status()["volume"])
-        mpc.setvol(vol + 2)
-        mpc.close()
-        mpc.disconnect()
-        print('lauter')
+    def _inc(self, counter):
+        vol = int(util.exec_mpc_func(self.mpc.status)["volume"])
+        self.logger.info(f"Increasing volume to {vol+2}.")
+        util.exec_mpc_func(self.mpc.setvol, vol + 2)
 
-    def my_dec(counter):
-        mpc.connect("localhost", 6600)
-        vol = int(mpc.status()["volume"])
-        mpc.setvol(vol - 2)
-        mpc.close()
-        mpc.disconnect()
-        print('leiser')
+    def _dec(self, counter):
+        vol = int(util.exec_mpc_func(self.mpc.status)["volume"])
+        self.logger.info(f"Decreasing volume to {vol - 2}.")
+        util.exec_mpc_func(self.mpc.setvol, vol - 2)
 
     def watch(self):
         self.encoder.watch()
         while not self.kill.kill_me:
             sleep(1)
         GPIO.cleanup()
-        self.logger.info("Exiting")
+        self.logger.info("Exiting rotary.")
         return
