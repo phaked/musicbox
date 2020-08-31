@@ -22,9 +22,9 @@ class MusicBox:
     def run(self):
         self.logger.info("Starting Musicbox")
 
-        self.Rotary.watch()
-        self.Buttons.watch()
-        self.RFID.watch()
+        self.rotary.watch()
+        self.buttons.watch()
+        self.rfid.watch()
 
 
 if __name__ == '__main__':
