@@ -11,6 +11,7 @@ class Rotary:
 
     def __init__(self):
         self.logger = logging.getLogger("musicbox")
+        GPIO.setmode(GPIO.BCM)
         self.encoder = pyky040.Encoder(CLK=6, DT=5)
         self.encoder.setup(inc_callback=self._inc, dec_callback=self._dec)
         self.kill = util.KillMe()

@@ -8,6 +8,7 @@ class Buttons:
     
     def __init__(self):
         self.logger = logging.getLogger("musicbox")
+        GPIO.setmode(GPIO.BCM)
         # create play/pause button
         self._create_button(13, self._pause_resume_callback)
         # create next button

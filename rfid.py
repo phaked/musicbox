@@ -9,8 +9,9 @@ from mpd import MPDClient
 class RFID:
 
     def __init__(self, map_path):
-        self.reader = MFRC522()
+        GPIO.setmode(GPIO.BCM)
         self.logger = logging.getLogger("musicbox")
+        self.reader = MFRC522()
         self.kill = KillMe()
 
         with open(map_path) as file:
