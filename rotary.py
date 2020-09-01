@@ -16,16 +16,28 @@ class Rotary:
         self.encoder.setup(inc_callback=self._inc, dec_callback=self._dec)
         self.kill = util.KillMe()
         self.mpc = MPDClient()
+        self.volume_steps = 2
 
     def _inc(self, counter):
-        vol = int(util.exec_mpc_func(self.mpc, self.mpc.status)["volume"])
-        self.logger.info(f"Increasing volume to {vol+2}.")
-        util.exec_mpc_func(self.mpc, self.mpc.setvol, vol + 2)
+        self.setvol("+")
 
     def _dec(self, counter):
+        self.setvol("-")
+
+    def _setvol(self, inc_dec):
         vol = int(util.exec_mpc_func(self.mpc, self.mpc.status)["volume"])
-        self.logger.info(f"Decreasing volume to {vol - 2}.")
-        util.exec_mpc_func(self.mpc, self.mpc.setvol, vol - 2)
+        new_vol = vol
+        i = 0
+        while vol <= new_vol:
+            if inc_dec == "-":
+                new_vol = vol - self.volume_steps - i
+            else:
+                new_vol = vol + self.volume_steps + i
+
+            util.exec_mpc_func(self.mpc, self.mpc.setvol, new_vol)
+            i += 1
+            new_vol = int(util.exec_mpc_func(self.mpc, self.mpc.status)["volume"])
+        self.logger.info(f"Increasing volume to {new_vol}.")
 
     def watch(self):
         self.encoder.watch()
