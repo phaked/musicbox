@@ -14,9 +14,9 @@ class Rotary:
         GPIO.setmode(GPIO.BCM)
         self.encoder = pyky040.Encoder(CLK=12, DT=16)
         self.encoder.setup(inc_callback=self._inc, dec_callback=self._dec)
-        self.kill = util.KillMe()
         self.mpc = MPDClient()
         self.volume_steps = 2
+        self.end = False
 
     def _inc(self, counter):
         self._setvol("+")
@@ -42,10 +42,16 @@ class Rotary:
             new_vol = int(util.exec_mpc_func(self.mpc, self.mpc.status)["volume"])
         self.logger.info(f"Volume set to {new_vol}.")
 
+    def stop(self):
+        self.end = True
+
     def watch(self):
         self.encoder.watch()
-        while not self.kill.kill_me:
-            sleep(1)
+        try:
+            while not self.end:
+                sleep(1)
+        except:
+            pass
         GPIO.cleanup()
         self.logger.info("Exiting rotary.")
         return

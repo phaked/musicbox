@@ -15,8 +15,7 @@ class Buttons:
         self._create_button(6, self._next_callback)
         # create previous button
         self._create_button(5, self._prev_callback)
-        self.kill = util.KillMe()
-        self.mpc = MPDClient()
+        self.end = False
 
     def _next_callback(self, *args):
         self.logger.info(f"Play next song.")
@@ -34,10 +33,16 @@ class Buttons:
         GPIO.setup(GPIO_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.add_event_detect(GPIO_PIN, GPIO.FALLING, callback=callback, bouncetime=100)
 
+    def stop(self):
+        self.end = True
+
     def watch(self):
         self.logger.info("Starting buttons.")
-        while not self.kill.kill_me:
-            sleep(1)
+        try:
+            while not self.end:
+                sleep(1)
+        except:
+            pass
         GPIO.cleanup()
         self.logger.info("Exiting buttons.")
         return

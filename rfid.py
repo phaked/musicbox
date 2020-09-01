@@ -1,7 +1,7 @@
 import logging
 import yaml
 import RPi.GPIO as GPIO
-from util import KillMe, exec_mpc_func
+from util import exec_mpc_func
 from time import sleep
 from mfrc522 import MFRC522
 from mpd import MPDClient
@@ -12,8 +12,7 @@ class RFID:
         GPIO.setmode(GPIO.BCM)
         self.logger = logging.getLogger("musicbox")
         self.reader = MFRC522()
-        self.kill = KillMe()
-
+        self.end = False
         with open(map_path) as file:
             self.playlist_map = yaml.full_load(file)
             self.logger.info("Loading RFID playlist mapping")
@@ -33,31 +32,33 @@ class RFID:
 
     def watch(self):
         self.logger.info("Starting RFID.")
+        try:
+            while not self.end:
+                status , _ = self.reader.MFRC522_Request(self.reader.PICC_REQIDL)
+                if status == self.reader.MI_OK:
+                    status, uid = self.reader.MFRC522_Anticoll()
+                if status == self.reader.MI_OK:
+                    id = self._convert_uid(uid)
+                else:
+                    id = 0
 
-        while not self.kill.kill_me:
-            status , _ = self.reader.MFRC522_Request(self.reader.PICC_REQIDL)
-            if status == self.reader.MI_OK:
-                status, uid = self.reader.MFRC522_Anticoll()
-            if status == self.reader.MI_OK:
-                id = self._convert_uid(uid)
-            else:
-                id = 0
-
-            if id != self.last_card_id:
-                self.logger.info(f"Card with id={id} read.")
-                exec_mpc_func(self.mpc, self.mpc.stop)
-                exec_mpc_func(self.mpc, self.mpc.clear)
-                if id != 0:
-                    if id in self.playlist_map:
-                        playlist = self.playlist_map[id]
-                        self.logger.info(f"Play {playlist}")
-                        exec_mpc_func(self.mpc, self.mpc.load, playlist)
-                        exec_mpc_func(self.mpc, self.mpc.play)
-                    else:
-                        self.logger.info(f"RFID with uid {id} is not mapped to a playlist.")
-            self.last_card_id = id
-            self.reader.MFRC522_Request(self.reader.PICC_HALT)
-            sleep(1)
+                if id != self.last_card_id:
+                    self.logger.info(f"Card with id={id} read.")
+                    exec_mpc_func(self.mpc, self.mpc.stop)
+                    exec_mpc_func(self.mpc, self.mpc.clear)
+                    if id != 0:
+                        if id in self.playlist_map:
+                            playlist = self.playlist_map[id]
+                            self.logger.info(f"Play {playlist}")
+                            exec_mpc_func(self.mpc, self.mpc.load, playlist)
+                            exec_mpc_func(self.mpc, self.mpc.play)
+                        else:
+                            self.logger.info(f"RFID with uid {id} is not mapped to a playlist.")
+                self.last_card_id = id
+                self.reader.MFRC522_Request(self.reader.PICC_HALT)
+                sleep(1)
+        except:
+            pass
         GPIO.cleanup()
         self.logger.info("Exiting RFID.")
         return
