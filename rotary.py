@@ -20,9 +20,12 @@ class Rotary:
 
     def _inc(self, counter):
         self.setvol("+")
+        self.logger.info(f"Increasing volume.")
+
 
     def _dec(self, counter):
         self.setvol("-")
+        self.logger.info(f"Decrasing volume.")
 
     def _setvol(self, inc_dec):
         vol = int(util.exec_mpc_func(self.mpc, self.mpc.status)["volume"])
@@ -37,7 +40,7 @@ class Rotary:
             util.exec_mpc_func(self.mpc, self.mpc.setvol, new_vol)
             i += 1
             new_vol = int(util.exec_mpc_func(self.mpc, self.mpc.status)["volume"])
-        self.logger.info(f"Increasing volume to {new_vol}.")
+        self.logger.info(f"Volume set to {new_vol}.")
 
     def watch(self):
         self.encoder.watch()
