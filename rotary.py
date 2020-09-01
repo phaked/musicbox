@@ -22,7 +22,7 @@ class Rotary:
         vol = int(util.exec_mpc_func(self.mpc, self.mpc.status)["volume"])
         new_vol = vol
         i = 0
-        while vol >= new_vol:
+        while vol >= new_vol and i < 6:
             new_vol = vol + self.volume_steps + i
             util.exec_mpc_func(self.mpc, self.mpc.setvol, new_vol)
             i += 1
@@ -33,7 +33,7 @@ class Rotary:
         vol = int(util.exec_mpc_func(self.mpc, self.mpc.status)["volume"])
         new_vol = vol
         i = 0
-        while vol <= new_vol:
+        while vol <= new_vol and i < 6:
             new_vol = vol - self.volume_steps - i
             util.exec_mpc_func(self.mpc, self.mpc.setvol, new_vol)
             i += 1
