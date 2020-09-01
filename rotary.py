@@ -19,12 +19,12 @@ class Rotary:
         self.volume_steps = 2
 
     def _inc(self, counter):
-        self.setvol("+")
+        self._setvol("+")
         self.logger.info(f"Increasing volume.")
 
 
     def _dec(self, counter):
-        self.setvol("-")
+        self._setvol("-")
         self.logger.info(f"Decrasing volume.")
 
     def _setvol(self, inc_dec):
