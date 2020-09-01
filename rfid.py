@@ -20,10 +20,6 @@ class RFID:
         self.mpc = MPDClient()
         self.last_card_id = 0
 
-    def _kill_callback(self, signum, frame):
-        self.logger.info(f"Service killed by {signum}")
-        self.kill_me = True
-
     def _convert_uid(self, uid):
         id = 0
         for i in range(len(uid)):
