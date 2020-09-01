@@ -19,28 +19,26 @@ class Rotary:
         self.end = False
 
     def _inc(self, counter):
-        self._setvol("+")
-        self.logger.info(f"Increasing volume.")
-
-
-    def _dec(self, counter):
-        self._setvol("-")
-        self.logger.info(f"Decrasing volume.")
-
-    def _setvol(self, inc_dec):
         vol = int(util.exec_mpc_func(self.mpc, self.mpc.status)["volume"])
         new_vol = vol
         i = 0
         while vol <= new_vol:
-            if inc_dec == "-":
-                new_vol = vol - self.volume_steps - i
-            else:
-                new_vol = vol + self.volume_steps + i
-
+            new_vol = vol + self.volume_steps + i
             util.exec_mpc_func(self.mpc, self.mpc.setvol, new_vol)
             i += 1
             new_vol = int(util.exec_mpc_func(self.mpc, self.mpc.status)["volume"])
-        self.logger.info(f"Volume set to {new_vol}.")
+        self.logger.info(f"Increasing volume to {new_vol}.")
+
+    def _dec(self, counter):
+        vol = int(util.exec_mpc_func(self.mpc, self.mpc.status)["volume"])
+        new_vol = vol
+        i = 0
+        while vol >= new_vol:
+            new_vol = vol - self.volume_steps - i
+            util.exec_mpc_func(self.mpc, self.mpc.setvol, new_vol)
+            i += 1
+            new_vol = int(util.exec_mpc_func(self.mpc, self.mpc.status)["volume"])
+        self.logger.info(f"Decreasing volume to {new_vol}.")
 
     def stop(self):
         self.end = True
