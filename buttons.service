@@ -4,7 +4,7 @@ PartOf=musicbox.service
 After=musicbox.service
 
 [Service]
-Type=forking
+Type=simple
 WorkingDirectory=/home/pi/musicbox
 User=pi
 ExecStart=/usr/bin/python3 /home/pi/musicbox/buttons.py
