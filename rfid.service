@@ -1,0 +1,15 @@
+[Unit]
+Description=Musicbox RFID
+PartOf=musicbox.service
+After=musicbox.service
+
+[Service]
+Type=forking
+WorkingDirectory=/home/pi/musicbox
+User=pi
+ExecStart=/usr/bin/python3 /home/pi/musicbox/rfid.py
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=musicbox.service
