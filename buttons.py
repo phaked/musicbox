@@ -38,9 +38,9 @@ class Buttons:
             playlist_length = int(status["playlistlength"])
             current_song_number = int(status["song"])
             if current_song_number == 0:
-                util.exec_mpc_func(self.mpc, self.mpc.previous)
-            else:
                 util.exec_mpc_func(self.mpc, self.mpc.play, playlist_length-1)
+            else:
+                util.exec_mpc_func(self.mpc, self.mpc.previous)
 
     def _pause_resume_callback(self, *args):
         self.logger.info(f"Pause/Resume song.")
