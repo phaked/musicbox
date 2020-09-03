@@ -21,8 +21,8 @@ class Buttons:
     def _next_callback(self, *args):
         self.logger.info(f"Play next song.")
         status = util.exec_mpc_func(self.mpc, self.mpc.status)
-        playlist_length = status["playlistlength"]
-        current_song_number = status["song"]
+        playlist_length = int(status["playlistlength"])
+        current_song_number = int(status["song"])
         if current_song_number == playlist_length-1:
             util.exec_mpc_func(self.mpc, self.mpc.play, 0)
         else:
@@ -31,8 +31,8 @@ class Buttons:
     def _prev_callback(self, *args):
         self.logger.info(f"Play previous song.")
         status = util.exec_mpc_func(self.mpc, self.mpc.status)
-        playlist_length = status["playlistlength"]
-        current_song_number = status["song"]
+        playlist_length = int(status["playlistlength"])
+        current_song_number = int(status["song"])
         if current_song_number == 0:
             util.exec_mpc_func(self.mpc, self.mpc.previous)
         else:
