@@ -20,15 +20,33 @@ class Buttons:
 
     def _next_callback(self, *args):
         self.logger.info(f"Play next song.")
-        util.exec_mpc_func(self.mpc, self.mpc.next)
+        status = util.exec_mpc_func(self.mpc, self.mpc.status)
+        playlist_length = status["playlistlength"]
+        current_song_number = status["song"]
+        if current_song_number == playlist_length-1:
+            util.exec_mpc_func(self.mpc, self.mpc.play, 0)
+        else:
+            util.exec_mpc_func(self.mpc, self.mpc.next)
 
     def _prev_callback(self, *args):
         self.logger.info(f"Play previous song.")
-        util.exec_mpc_func(self.mpc, self.mpc.previous)
+        status = util.exec_mpc_func(self.mpc, self.mpc.status)
+        playlist_length = status["playlistlength"]
+        current_song_number = status["song"]
+        if current_song_number == 0:
+            util.exec_mpc_func(self.mpc, self.mpc.previous)
+        else:
+            util.exec_mpc_func(self.mpc, self.mpc.play, playlist_length-1)
 
     def _pause_resume_callback(self, *args):
         self.logger.info(f"Pause/Resume song.")
-        util.exec_mpc_func(self.mpc, self.mpc.pause)
+
+        state = util.exec_mpc_func(self.mpc, self.mpc.status)["state"]
+        if state == "stop":
+            util.exec_mpc_func(self.mpc, self.mpc.play)
+        else:
+            util.exec_mpc_func(self.mpc, self.mpc.pause)
+
 
     def _create_button(self, GPIO_PIN, callback):
         GPIO.setup(GPIO_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
